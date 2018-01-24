@@ -52,17 +52,17 @@ void loop() {
   LEFT_SENS_distance = (LEFT_SENS_duration/2) / 29.1;
   
   if (RIGHT_SENS_distance < 10 or LEFT_SENS_distance < 10) {
-    if (RIGHT_SENS_distance < LEFT_SENS_DISTANCE){
+    if (RIGHT_SENS_distance < LEFT_SENS_distance){
     Serial.println("TURN LEFT");
     turnLeft();
     delayMicroseconds(1000)
     }
-    else if (LEFT_SEND_distance < RIGHT_SENS_DISTANCE){
+    else if (LEFT_SENS_distance < RIGHT_SENS_distance){
     Serial.println("TURN RIGHT");
     turnRight(); 
     delayMicroseconds(1000);
     }
-    else if (LEFT_SENS_distance == RIGHT_SENS_distance){
+    else if (LEFT_SENS_distance <= 4 && RIGHT_SENS_distance <= 4){
       Serial.println("Reverse");
       delayMicroseconds(1000);
     }
