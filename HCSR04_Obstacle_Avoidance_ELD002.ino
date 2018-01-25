@@ -4,15 +4,21 @@
  *  --- 17ELD002, R ASANTE, Group G - Created: 22/01/2018
 */
 
-#include <"Servo.h">
+#include <Servo.h>
 
-#define L_Trig 12
-#define L_Echo 13
-#define R_Trig 10
-#define R_Echo 11
+#define L_Trig 4
+#define L_Echo 5
+#define R_Trig 2
+#define R_Echo 3
+#define output_mbed 2
 
 Servo servo_CH1;
 Servo servo_CH2;
+
+  long LEFT_SENS_distance;
+  long RIGHT_SENS_distance;
+  long duration;
+  long distance;
 
 void setup() {
   Serial.begin (9600);
@@ -20,6 +26,7 @@ void setup() {
   pinMode(R_Trig, OUTPUT);
   pinMode(R_Echo, INPUT);
   pinMode(L_Echo, INPUT);
+  pinMode (output_mbed, OUTPUT);
 
   //TriTrack Wheel Setup 
   servo_CH1.attach(8);
@@ -27,53 +34,25 @@ void setup() {
 }
 
 void loop() {
-  long LEFT_SENS_duration;
-  long RIGHT_SENS_duration;
-  long LEFT_SENS_distance;
-  long RIGHT_SENS_distance;
-
- //Begin Range Read
- 
-  digitalWrite(L_Trig, LOW);
-  digitalWrite(R_Trig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(L_Trig, HIGH);
-  digitalWrite(R_Trig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(L_Trig, LOW);
-  digitalWrite(R_Trig, LOW);
-
- //End Range Read
-  
-  RIGHT_SENS_duration = pulseIn(R_Echo, HIGH);
-  LEFT_SENS_duration = pulseIn(L_Echo, HIGH);
-  
-  RIGHT_SENS_distance = (RIGHT_SENS_duration/2) / 29.1;
-  LEFT_SENS_distance = (LEFT_SENS_duration/2) / 29.1;
-  
-  if (RIGHT_SENS_distance < 10 or LEFT_SENS_distance < 10) {
-    if (RIGHT_SENS_distance < LEFT_SENS_distance){
-    Serial.println("TURN LEFT");
-    turnLeft();
-    delayMicroseconds(1000)
-    }
-    else if (LEFT_SENS_distance < RIGHT_SENS_distance){
-    Serial.println("TURN RIGHT");
-    turnRight(); 
-    delayMicroseconds(1000);
-    }
-    else if (LEFT_SENS_distance <= 4 && RIGHT_SENS_distance <= 4){
-      Serial.println("Reverse");
-      delayMicroseconds(1000);
-    }
+  Serial.print("Right");
+  Serial.println(SonarSensor(L_Trig, L_Echo));
+  Serial.print("Left");
+  Serial.println(SonarSensor(R_Trig, R_Echo));
+  delay(200);
 }
-  else {
-   Serial.println("Safe.");
-   forward();
-  }
-  Serial.print(RIGHT_SENS_distance);
-  delay(300);
+
+long SonarSensor(int trigPin,int echoPin)
+{
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+duration = pulseIn(echoPin, HIGH);
+distance = (duration/2) / 29.1;
+return distance;
 }
+
 void forward() {
   servo_CH1.write(0);
   servo_CH2.write(180);
