@@ -13,10 +13,7 @@
 #define output_mbed 2
 
 Servo servo_CH1;
-Servo servo_CH2;
-
-  long LEFT_SENS_distance;
-  long RIGHT_SENS_distance;
+Servo servo_CH2; 
   long duration;
   long distance;
 
@@ -34,20 +31,38 @@ void setup() {
 }
 
 void loop() {
-  Serial.print("Right");
+  Serial.print("Right"); //TO AID IN MODULAR TESTING
   Serial.println(SonarSensor(L_Trig, L_Echo));
   Serial.print("Left");
   Serial.println(SonarSensor(R_Trig, R_Echo));
+
+ 
+ if (SonarSensor(L_Trig, L_Echo) <= 20 or SonarSensor(R_Trig, R_Echo) <= 20){
+    if(SonarSensor(L_Trig, L_Echo) > SonarSensor(R_Trig, R_Echo)) {
+      Serial.println("TURN LEFT");
+    }
+    else if(SonarSensor(R_Trig, R_Echo) > SonarSensor(L_Trig, L_Echo)) {
+      Serial.println("TURN RIGHT");
+    }
+    do {
+      Serial.println("REVERSE");
+      delayMicroseconds(300);
+      Serial.println("TURN AWAY");
+    } while (SonarSensor(R_Trig, R_Echo) < 5 && SonarSensor(L_Trig, L_Echo) < 5);
+  }
+  else {
+    Serial.println("SAFE");
+  }
   delay(200);
 }
 
 long SonarSensor(int trigPin,int echoPin)
 {
-digitalWrite(trigPin, LOW);
+digitalWrite(trigPin, LOW); //Clear Sensor Readings
 delayMicroseconds(2);
-digitalWrite(trigPin, HIGH);
+digitalWrite(trigPin, HIGH); //Begin Scan
 delayMicroseconds(10);
-digitalWrite(trigPin, LOW);
+digitalWrite(trigPin, LOW); //End Scan
 duration = pulseIn(echoPin, HIGH);
 distance = (duration/2) / 29.1;
 return distance;
