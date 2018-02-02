@@ -7,7 +7,6 @@
 #define L_Echo 5
 #define R_Trig 2
 #define R_Echo 3
-#define output_mbed 2
 
 Servo servo_CH1; //Left leg
 Servo servo_CH2; //right leg
