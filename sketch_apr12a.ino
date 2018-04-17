@@ -241,13 +241,18 @@ servo4.attach(5);
              //Free Button for TriTrack Use
              rwheel.attach(8);
              lwheel.attach(9);
-             
-                  if(sL >= LWHEEL_MIN) {
-            sL += RHWHEEL_STEP; 
-             
-          }
+                
+            if(sL >= LWHEEL_MIN) {
+            sL -= LWHEEL_STEP; 
+            }
+            
+            if (sL == LWHEEL_MIN){
+            sL = LWHEEL_INIT - LWHEEL_STEP;
+            }
+           
+                
           if(Xbox.getButtonClick(DOWN,i)) { 
-             //Free Button for TriTrack Use
+
           }
           
    
