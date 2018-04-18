@@ -232,50 +232,25 @@ servo4.attach(5);
           Serial.println(sR);
 
           if(Xbox.getButtonClick(LEFT,i)) { 
-             //Free Button for TriTrack Use
+             rwheel.attach(8);
+             lwheel.attach(9);
+             TriTrackLeft();
           }
           if(Xbox.getButtonClick(RIGHT,i)) { 
-             //Free Button for TriTrack Use
+             rwheel.attach(8);
+             lwheel.attach(9);
+             TriTrackRight();
           }
           if(Xbox.getButtonClick(UP,i)) { 
              rwheel.attach(8);
              lwheel.attach(9);
-           //LEFT WHEEL FORWARD    
-            if(sL > LWHEEL_MIN) {
-            sL -= LWHEEL_STEP; 
-            }
-            
-            if (sL == LWHEEL_MIN){
-            sL = LWHEEL_INIT - LWHEEL_STEP;
-            }
-            
-           //RIGHT WHEEL FORWARD                
-            if(sR > LWHEEL_MIN) {
-            sR -= LWHEEL_STEP; 
-            }
-            
-            if (sR == LWHEEL_MIN){
-            sR = LWHEEL_INIT - LWHEEL_STEP;
+             TriTrackForward();
             }
  
           if(Xbox.getButtonClick(DOWN,i)) { 
-           //LEFT WHEEL BACKWARD    
-            if(sL < LWHEEL_MAX) {
-            sL += LWHEEL_STEP; 
-            }
-            
-            if (sL == LWHEEL_MAX){
-            sL = LWHEEL_INIT + LWHEEL_STEP;
-            }
-            
-           //RIGHT WHEEL BACKWARD                
-            if(sR < LWHEEL_MAX) {
-            sR += LWHEEL_STEP; 
-            }
-            
-            if (sR == LWHEEL_MAX){
-            sR = LWHEEL_INIT + LWHEEL_STEP;
-            }
+            rwheel.attach(8);
+            lwheel.attach(9);
+            TriTrackBackward();
           }
           
    
@@ -342,5 +317,88 @@ previousTime = millis(); //save time at end of loop
 }   
     }
 
-  }
+
+
+void TriTrackForward(){
+//LEFT WHEEL FORWARD    
+    if(sL > LWHEEL_MIN) {
+    sL -= LWHEEL_STEP; 
+    }
+    
+    if (sL == LWHEEL_MIN){
+    sL = LWHEEL_INIT - LWHEEL_STEP;
+    }
+    
+   //RIGHT WHEEL FORWARD                
+    if(sR > LWHEEL_MIN) {
+    sR -= LWHEEL_STEP; 
+    }
+    
+    if (sR == LWHEEL_MIN){
+    sR = LWHEEL_INIT - LWHEEL_STEP;
+    }
+}
+
+void TriTrackBackward(){
+ //LEFT WHEEL BACKWARD    
+    if(sL < LWHEEL_MAX) {
+    sL += LWHEEL_STEP; 
+    }
+    
+    if (sL == LWHEEL_MAX){
+    sL = LWHEEL_INIT + LWHEEL_STEP;
+    }
+    
+   //RIGHT WHEEL BACKWARD                
+    if(sR < LWHEEL_MAX) {
+    sR += LWHEEL_STEP; 
+    }
+    
+    if (sR == LWHEEL_MAX){
+    sR = LWHEEL_INIT + LWHEEL_STEP;
+    }
+  
+}
+
+void TriTrackLeft(){
+ //LEFT WHEEL BACKWARD    
+    if(sL < LWHEEL_MAX) {
+    sL += LWHEEL_STEP; 
+    }
+    
+    if (sL == LWHEEL_MAX){
+    sL = LWHEEL_INIT + LWHEEL_STEP;
+    }
+       //RIGHT WHEEL FORWARD                
+    if(sR > LWHEEL_MIN) {
+    sR -= LWHEEL_STEP; 
+    }
+    
+    if (sR == LWHEEL_MIN){
+    sR = LWHEEL_INIT - LWHEEL_STEP;
+    }
+    
+  
+}
+
+void TriTrackRight(){
+   //RIGHT WHEEL BACKWARD                
+    if(sR < LWHEEL_MAX) {
+    sR += LWHEEL_STEP; 
+    }
+    
+    if (sR == LWHEEL_MAX){
+    sR = LWHEEL_INIT + LWHEEL_STEP;
+    }
+    //LEFT WHEEL FORWARD    
+    if(sL > LWHEEL_MIN) {
+    sL -= LWHEEL_STEP; 
+    }
+    
+    if (sL == LWHEEL_MIN){
+    sL = LWHEEL_INIT - LWHEEL_STEP;
+    }
+  
+}
+ 
 
