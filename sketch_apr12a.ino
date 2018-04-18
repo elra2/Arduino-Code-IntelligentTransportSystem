@@ -238,21 +238,44 @@ servo4.attach(5);
              //Free Button for TriTrack Use
           }
           if(Xbox.getButtonClick(UP,i)) { 
-             //Free Button for TriTrack Use
              rwheel.attach(8);
              lwheel.attach(9);
-                
-            if(sL >= LWHEEL_MIN) {
+           //LEFT WHEEL FORWARD    
+            if(sL > LWHEEL_MIN) {
             sL -= LWHEEL_STEP; 
             }
             
             if (sL == LWHEEL_MIN){
             sL = LWHEEL_INIT - LWHEEL_STEP;
             }
-           
-                
+            
+           //RIGHT WHEEL FORWARD                
+            if(sR > LWHEEL_MIN) {
+            sR -= LWHEEL_STEP; 
+            }
+            
+            if (sR == LWHEEL_MIN){
+            sR = LWHEEL_INIT - LWHEEL_STEP;
+            }
+ 
           if(Xbox.getButtonClick(DOWN,i)) { 
-
+           //LEFT WHEEL BACKWARD    
+            if(sL < LWHEEL_MAX) {
+            sL += LWHEEL_STEP; 
+            }
+            
+            if (sL == LWHEEL_MAX){
+            sL = LWHEEL_INIT + LWHEEL_STEP;
+            }
+            
+           //RIGHT WHEEL BACKWARD                
+            if(sR < LWHEEL_MAX) {
+            sR += LWHEEL_STEP; 
+            }
+            
+            if (sR == LWHEEL_MAX){
+            sR = LWHEEL_INIT + LWHEEL_STEP;
+            }
           }
           
    
@@ -320,3 +343,4 @@ previousTime = millis(); //save time at end of loop
     }
 
   }
+
