@@ -7,6 +7,14 @@
 
 #define LOOPTIME 50 //Define the delay between timed loop cycles. //was 25
 
+//Ultrasonic Sensors
+#define L_Trig 4      //Used for Left Ultrasonic Sensor
+#define L_Echo 5
+#define R_Trig 2      //Used for Right Ultrasonic Sensor
+#define R_Echo 3
+#define Edge_Echo 20  //Used for bottom of TriTrack, detects edge
+#define Edge_Trig 21  
+
 //Define where each servo is attahed//
 
 #define SERVO1 3 //  Right Hat X        : Base Rotate
@@ -95,6 +103,9 @@ Servo servo7; //Good
 Servo lwheel;
 Servo rwheel;
 
+long duration; 
+long distance;
+
 unsigned long previousTime = 0; //for loop timing
 
 int s1 = SERVO1_INIT; //Define variables to store servo positions and set to initial positions
@@ -111,6 +122,13 @@ int sR = RWHEEL_INIT;
 void setup()            //setup loop
 { 
   Serial.begin(115200);
+  pinMode(L_Trig, OUTPUT);   
+  pinMode(R_Trig, OUTPUT);
+  pinMode(Echo_Trig, OUTPUT);    
+  pinMode(R_Echo, INPUT);    
+  pinMode(L_Echo, INPUT);
+  pinMode(Edge_Echo, INPUT);
+    
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
   if (Usb.Init() == -1) {
     Serial.print(F("\r\nOSC did not start"));
@@ -232,28 +250,18 @@ servo4.attach(5);
           Serial.println(sR);
 
           if(Xbox.getButtonClick(LEFT,i)) { 
-             rwheel.attach(8);
-             lwheel.attach(9);
              TriTrackLeft();
           }
           if(Xbox.getButtonClick(RIGHT,i)) { 
-             rwheel.attach(8);
-             lwheel.attach(9);
              TriTrackRight();
           }
           if(Xbox.getButtonClick(UP,i)) { 
-             rwheel.attach(8);
-             lwheel.attach(9);
              TriTrackForward();
             }
- 
           if(Xbox.getButtonClick(DOWN,i)) { 
-            rwheel.attach(8);
-            lwheel.attach(9);
             TriTrackBackward();
           }
           
-   
           if(Xbox.getButtonClick(B,i))   {           // Safety Release
                                                   // Detaches all servos - waiting for button to re-engage
               servo1.detach();
@@ -266,23 +274,49 @@ servo4.attach(5);
               lwheel.detach();
               rwheel.detach();
                                           }
-                                          
 
-          if(Xbox.getButtonClick(A,i))  {   -- BUTTON A
-            //Automode Switch for TriTrack
-            //AutoMODE != AutoMODE;
-            //Allow Bot to read ultrasonic sensors
-           
-          }
+      if(Xbox.getButtonClick(A,i))  {   -- BUTTON A
+      //Automatic Mode------------
+      lwheel.detach();
+      rwheel.detach();
+    
+      //Begin L/R Sensor Findings
+      if (SonarSensor(L_Trig, L_Echo) > 15 && SonarSensor(R_Trig, R_Echo) > 15){   
+      Serial.println("SAFE");  
+      TriTrackFoward();
+      } else if (SonarSensor(L_Trig, L_Echo) <= 11 or SonarSensor(R_Trig, R_Echo) <= 11){
+      if (SonarSensor(L_Trig, L_Echo) <= 7 && SonarSensor(R_Trig, R_Echo) <= 7){      
+      Serial.println("REVERSE");       
+      TriTrackBackward();         
+      }   
+      else if(SonarSensor(L_Trig, L_Echo) > SonarSensor(R_Trig, R_Echo)) {
+      Serial.println("TURN LEFT");           
+      TriTrackLeft();      
+      }      
+      else if(SonarSensor(R_Trig, R_Echo) > SonarSensor(L_Trig, L_Echo)) {  
+      Serial.println("TURN RIGHT");   
+      TriTrackRight();     
+             }
+           } 
+         }
 
-          if(Xbox.getButtonClick(X,i))  { -- BUTTON X
-            //Free Button for TriTrack use
-           
-          }
-          if(Xbox.getButtonClick(Y,i))  {  ---- BUTTON Y
-            //Free Button for TriTrack Use
-           
-          }
+      //DETECT THE EDGE OF PLATFORM--
+      if (SonarSensor(Edge_Trig, Edge_Echo) > 3){   
+      Serial.println("EDGE DETECTED");  
+      TriTrackStop();
+      rhweel.detach();   //Safety Feature - avoids accidental movement over edge, use X to regain control
+      lwheel.detach();
+      }
+   
+      if(Xbox.getButtonClick(X,i))  { -- BUTTON X
+      //Manual Mode--------------------
+      rwheel.attach(8);
+      lwheel.attach(9);
+        }
+      
+      if(Xbox.getButtonClick(Y,i))  {  ---- BUTTON Y
+      //Free Button for TriTrack Use
+           }
       
           if(Xbox.getButtonClick(START,i)) {       //Reset ALL Servos to initial positions when "start" button is pressed
             s1 = SERVO1_INIT;
@@ -295,6 +329,7 @@ servo4.attach(5);
             sL = LWHEEL_INIT;
             sR = RWHEEL_INIT;
            }
+
            
          //Following are re-programmable detach buttons for other applications
          //Note : Does not have to be limited to just servos
@@ -303,7 +338,6 @@ servo4.attach(5);
 
 previousTime = millis(); //save time at end of loop
         } //Timed loop  
-      
         servo1.write(s1); //Write to servos.
         servo2.write(s2);
         servo3.write(s3);
@@ -314,10 +348,25 @@ previousTime = millis(); //save time at end of loop
         lwheel.write(sL);
         rwheel.write(sR);
                             }
-}   
+} 
+    
     }
 
 
+long SonarSensor(int trigPin,int echoPin){
+  digitalWrite(trigPin, LOW); //Clear Sensor Readings
+  delayMicroseconds(2); 
+  digitalWrite(trigPin, HIGH); //Begin Scan
+  delayMicroseconds(10); 
+  digitalWrite(trigPin, LOW); //End Scan  
+  duration = pulseIn(echoPin, HIGH); 
+  distance = (duration/2) / 29.1;  
+  return distance;  
+}  
+
+void MoveAutonomously(){
+ 
+}
 
 void TriTrackForward(){
 //LEFT WHEEL FORWARD    
@@ -399,6 +448,12 @@ void TriTrackRight(){
     sL = LWHEEL_INIT - LWHEEL_STEP;
     }
   
+}
+
+void TriTrackStop(){
+   //RIGHT WHEEL BACKWARD                
+    sR = LWHEEL_INIT; 
+    sL = RWHEEL_INIT;
 }
  
 
