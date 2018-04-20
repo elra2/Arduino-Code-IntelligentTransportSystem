@@ -8,12 +8,12 @@
 #define LOOPTIME 50 //Define the delay between timed loop cycles. //was 25
 
 //Ultrasonic Sensors
-#define L_Trig 4      //Used for Left Ultrasonic Sensor
-#define L_Echo 5
-#define R_Trig 2      //Used for Right Ultrasonic Sensor
-#define R_Echo 3
-#define Edge_Echo 20  //Used for bottom of TriTrack, detects edge
-#define Edge_Trig 21  
+#define L_Trig 22      //Used for Left Ultrasonic Sensor
+#define L_Echo 23
+#define R_Trig 24      //Used for Right Ultrasonic Sensor
+#define R_Echo 25
+#define Edge_Echo 26   //Used for bottom of TriTrack, detects edge
+#define Edge_Trig 27  
 
 //Define where each servo is attahed//
 
@@ -28,10 +28,10 @@
 #define SERVO6 6 //  RightHatX          : Spin Claw
 #define SERVO7 7
 
-#define RWHEEL 8 //                     : Right Wheel TriTrack
-#define LWHEEL 9 //                     : Left Wheel TriTrack
+#define RWHEEL 28 //                     : Right Wheel TriTrack
+#define LWHEEL 29 //                     : Left Wheel TriTrack
 
-#define SERVO1_INIT 90 //Define initial servo position(initial Condition) & (initiates when "start" button pressed).
+#define SERVO1_INIT 90   //Define initial servo position(initial Condition) & (initiates when "start" button pressed).
 #define SERVO2_INIT 120
 #define SERVO3_INIT 120
 #define SERVO4_INIT 120
@@ -310,8 +310,8 @@ servo4.attach(5);
    
       if(Xbox.getButtonClick(X,i))  { -- BUTTON X
       //Manual Mode--------------------
-      rwheel.attach(8);
-      lwheel.attach(9);
+      rwheel.attach(28);
+      lwheel.attach(29);
         }
       
       if(Xbox.getButtonClick(Y,i))  {  ---- BUTTON Y
@@ -355,14 +355,14 @@ previousTime = millis(); //save time at end of loop
 
 long SonarSensor(int trigPin,int echoPin){
   digitalWrite(trigPin, LOW); //Clear Sensor Readings
-  delayMicroseconds(2); 
+  delayMicroseconds(2); 
   digitalWrite(trigPin, HIGH); //Begin Scan
-  delayMicroseconds(10); 
-  digitalWrite(trigPin, LOW); //End Scan  
-  duration = pulseIn(echoPin, HIGH); 
-  distance = (duration/2) / 29.1;  
-  return distance;  
-}  
+  delayMicroseconds(10); 
+  digitalWrite(trigPin, LOW); //End Scan  
+  duration = pulseIn(echoPin, HIGH); 
+  distance = (duration/2) / 29.1;  
+  return distance;  
+}  
 
 void MoveAutonomously(){
  
@@ -426,8 +426,7 @@ void TriTrackLeft(){
     if (sR == LWHEEL_MIN){
     sR = LWHEEL_INIT - LWHEEL_STEP;
     }
-    
-  
+
 }
 
 void TriTrackRight(){
@@ -455,5 +454,3 @@ void TriTrackStop(){
     sR = LWHEEL_INIT; 
     sL = RWHEEL_INIT;
 }
- 
-
