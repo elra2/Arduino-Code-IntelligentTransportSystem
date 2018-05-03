@@ -7,6 +7,13 @@
 
 #define LOOPTIME 50 //Define the delay between timed loop cycles. //was 25
 
+//define ultrasonic sensor signal
+#define leftsignal 21
+#define rightsignal 22
+#define forwardsignal 23
+#define reversesignal 24
+#define stopsignal 25
+
 //Define where each servo is attahed//
 
 #define SERVO1 3 //  Right Hat X        : Base Rotate
@@ -32,6 +39,7 @@
 #define SERVO7_INIT 120
 #define LWHEEL_INIT 90
 #define RWHEEL_INIT 90
+
 
 #define LWHEEL_STEP 5
 #define RWHEEL_STEP 5
@@ -108,9 +116,23 @@ int s7 = SERVO7_INIT;
 int sL = LWHEEL_INIT;
 int sR = RWHEEL_INIT;
 
+int readleft = 0;
+int readright = 0;
+int readforward = 0;
+int readstop = 0;
+int readreverse = 0;
+
+
 //================================ Setup ================================//
 void setup()            //setup loop
 { 
+  //Ultrasonic Pin reading
+  pinMode(leftsignal, INPUT);
+  pinMode (rightsignal, INPUT);
+  pinMode (reversesignal, INPUT);
+  pinMode (forwardsignal, INPUT);
+  pinMode (stopsignal, INPUT); 
+  
   Serial.begin(115200);
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
   if (Usb.Init() == -1) {
@@ -135,7 +157,13 @@ void setup()            //setup loop
 //================================ Loop ================================//
 
 void loop() { //Primary runtime loop
-  
+
+ readleft =  digitalRead(leftsignal);
+ readright =  digitalRead(rightsignal);
+ readreverse =  digitalRead(reversesignal);
+ readforward =  digitalRead(forwardsignal);
+ readstop =  digitalRead(stopsignal);
+ 
   Usb.Task(); //Task USB
 
   if(Xbox.XboxReceiverConnected || Xbox.Xbox360Connected) {
@@ -210,7 +238,7 @@ servo4.attach(5);
           TriTrackForward();
           }
           if(Xbox.getButtonClick(DOWN,i)) {
-          TriTrackBackward();
+          TriTrackReverse();
           }
           if(Xbox.getButtonClick(LEFT,i)) {
           TriTrackLeft();
@@ -236,9 +264,25 @@ servo4.attach(5);
           
           
           if(Xbox.getButtonClick(A,i))   {        //Automation Mode - Ultrasonic Sensors
-            //Utrasonic Sensor Operation
-                                     }
-                                     
+           if (readleft == HIGH){
+            TriTrackLeft();
+           }
+           else if (readstop == HIGH){
+            sL = 140;
+            sR = 140;
+           }
+           else if (readforward == HIGH){
+            TriTrackForward();
+           }
+           else if (readright == HIGH){
+            TriTrackRight();
+           }
+           else if (readreverse == HIGH){
+            TriTrackReverse();
+           }
+           }
+           
+                                                    
           
           if(Xbox.getButtonClick(X,i))   {        //Unlock Wheels and employ manual mode
                                                   // Detaches all servos - waiting for button to re-engage
@@ -278,8 +322,8 @@ servo4.attach(5);
             s5 = SERVO5_INIT;
             s6 = SERVO6_INIT;  
             s7 = SERVO7_INIT;                                 }
-            sL = LWHEEL_INIT;
-            sR = RWHEEL_INIT;
+            sL= LWHEEL_INIT;
+            sR= RWHEEL_INIT;
                                        
                                        //Following are re-programmable detach buttons for other applications
                                        //Note : Does not have to be limited to just servos
@@ -308,10 +352,10 @@ previousTime = millis(); //save time at end of loop
 void TriTrackForward(){
           sL = 40;
           sR = 40;
-}  
+}
 
 
-void TriTrackBackward(){
+void TriTrackReverse(){
           sR = 110;
           sL = 110;
 }
@@ -326,5 +370,7 @@ void TriTrackRight(){
           sL = 140;
 }
  
+
+
 
 
