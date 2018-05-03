@@ -8,12 +8,12 @@
 #define R_Trig 2
 #define R_Echo 3
 #define Edge_Trig 7
-#define Edge_Echo 8
-#define turnleft 9
-#define turnright 10
-#define reverse 11
-#define forward 12
-#define stoptritrack 13
+#define Edge_Echo 6
+#define turnleft 8
+#define turnright 9
+#define reverse 10
+#define forward 11
+#define stoptritrack 12
 
 Servo servo_CH1; //Left leg
 Servo servo_CH2; //right leg
