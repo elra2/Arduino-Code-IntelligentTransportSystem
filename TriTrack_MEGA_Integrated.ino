@@ -45,6 +45,7 @@
 #define RWHEEL_STEP 5
 #define SERVO1_STEP 3       //Step Value for L/R Tripper [Base Joint]
 #define SERVO7_STEP 8                            //Define step size for servos controlled by D-pad (larger is faster).
+#define SERVO6_STEP 5
 
 #define SERVO2_RATE 4/32000
 
@@ -213,20 +214,32 @@ servo4.attach(5);
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
           if(s4 < SERVO4_MIN) s4 = SERVO4_MIN;
           
-          
-          
            if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
             servo5.attach(6);          
             s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
           }
           if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
           if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
-          
-          if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
+
+
+          //--- temporary disattach----//
+         // if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
    
-            servo6.attach(2);
+          //  servo6.attach(2);
          //Servo6 Spin Claw Pin7
-            s6 = s6 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO6_RATE*SERVO6_DIRECTION;
+         //   s6 = s6 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO6_RATE*SERVO6_DIRECTION;
+         // }
+        //  if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
+         // if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
+
+          
+          if(Xbox.getButtonClick(L1,i)) { 
+          //GRIPPER
+          servo6.attach(6);
+          s6 = s6 + SERVO6_STEP*SERVO6_DIRECTION;
+          }
+          else if(Xbox.getButtonClick(R1,i)) {
+            s6 = s6 - SERVO6_STEP*SERVO6_DIRECTION;
           }
           if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
           if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
@@ -235,7 +248,7 @@ servo4.attach(5);
          //WHEELS----------------------------------------
          
         if(Xbox.getButtonClick(UP,i)) { 
-          TriTrackForward();
+          TriTrackForward(); 
           }
           if(Xbox.getButtonClick(DOWN,i)) {
           TriTrackReverse();
@@ -322,9 +335,8 @@ servo4.attach(5);
             s5 = SERVO5_INIT;
             s6 = SERVO6_INIT;  
             s7 = SERVO7_INIT;                                 }
-            sL= LWHEEL_INIT;
-            sR= RWHEEL_INIT;
-                                       
+            sL = LWHEEL_INIT;
+            sR = RWHEEL_INIT;
                                        //Following are re-programmable detach buttons for other applications
                                        //Note : Does not have to be limited to just servos
                                        //I.e. could attach, detach led when servo is attached, detached
@@ -356,21 +368,17 @@ void TriTrackForward(){
 
 
 void TriTrackReverse(){
-          sR = 110;
-          sL = 110;
+          sR = 140;
+          sL = 140;
 }
 
 void TriTrackLeft(){
           sR = 40;
-          sL = 110;
+          sL = 140;
 }
 
 void TriTrackRight(){  
-          sR = 110;
-          sL = 140;
+          sR = 140;
+          sL = 40;
 }
  
-
-
-
-
