@@ -106,22 +106,7 @@ int s4 = SERVO4_INIT;
 int s5 = SERVO5_INIT;
 int s6 = SERVO6_INIT;
 int s7 = SERVO7_INIT;
-int sL = LWHEEL_INIT;
-int sR = RWHEEL_INIT;
-
-//================================ Setup ================================//
-void setup()            //setup loop
-{ 
-  Serial.begin(115200);
-  while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
-  if (Usb.Init() == -1) {
-    Serial.print(F("\r\nOSC did not start"));
-    while (1); //halt
-  }
-  Serial.print(F("\r\nXbox Wireless Receiver Initiated"));
-  
-  servo1.detach();     //Initially All Servos Disabled // Waiting for Button to Initialize [ requirement of MAKE course]
-  servo2.detach();
+int sL = LWHEEL_INIT;detach();
   servo3.detach();
   servo4.detach();
   servo5.detach();
@@ -137,6 +122,22 @@ void setup()            //setup loop
 
 void loop() { //Primary runtime loop
   
+  digitalread()
+int sR = RWHEEL_INIT;
+
+//================================ Setup ================================//
+void setup()            //setup loop
+{ 
+  Serial.begin(115200);
+  while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
+  if (Usb.Init() == -1) {
+    Serial.print(F("\r\nOSC did not start"));
+    while (1); //halt
+  }
+  Serial.print(F("\r\nXbox Wireless Receiver Initiated"));
+  
+  servo1.detach();     //Initially All Servos Disabled // Waiting for Button to Initialize [ requirement of MAKE course]
+  servo2.
   Usb.Task(); //Task USB
 
   if(Xbox.XboxReceiverConnected || Xbox.Xbox360Connected) {
@@ -237,7 +238,17 @@ servo4.attach(5);
           
           
           if(Xbox.getButtonClick(A,i))   {        //Automation Mode - Ultrasonic Sensors
-            //Utrasonic Sensor Operation
+            lwheel.detach();
+            rwheel.detach();
+            if (){
+            }
+            else if (){
+            }
+            else if (){
+            }
+            else if (){
+            }
+            
                                      }
                                      
           
