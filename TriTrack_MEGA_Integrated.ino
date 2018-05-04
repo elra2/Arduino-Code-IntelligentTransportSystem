@@ -46,6 +46,7 @@
 #define SERVO1_STEP 3       //Step Value for L/R Tripper [Base Joint]
 #define SERVO7_STEP 8                            //Define step size for servos controlled by D-pad (larger is faster).
 #define SERVO6_STEP 5
+#define SERVO5_STEP 2
 
 #define SERVO2_RATE 4/32000
 
@@ -53,7 +54,7 @@
       //Define rate for servos controller by sticks (larger is faster).
 #define SERVO3_RATE 4/32000 
 #define SERVO4_RATE 5/32000
-#define SERVO5_RATE 5/32000
+#define SERVO5_RATE 1/32000
 #define SERVO6_RATE 8/32000    
 
 #define SERVO1_DIRECTION 1 //Set to -1 to reverse servo direction.
@@ -80,7 +81,7 @@
 #define SERVO2_MAX 178
 #define SERVO3_MAX 178 // EDIT*** : Claw - Change Value to avoid collision
 #define SERVO4_MAX 178 // EDIT*** : Claw - Change Value to avoid collision 
-#define SERVO5_MAX 178
+#define SERVO5_MAX 50
 #define SERVO6_MAX 178
 #define SERVO7_MAX 178
 #define LWHEEL_MAX 140
@@ -213,10 +214,22 @@ servo4.attach(5);
           }
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
           if(s4 < SERVO4_MIN) s4 = SERVO4_MIN;
-          
-           if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-            servo5.attach(6);          
-            s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
+
+          //temporary main base removal
+          // if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
+           // servo5.attach(6);          
+          //  s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
+         // }
+        //  if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
+        //  if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
+
+          if(Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE) { 
+          GRIPPER
+          servo5.attach(2);
+          s5 = s5 + SERVO5_STEP*SERVO5_DIRECTION;
+          }
+          else if(Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
+            s5 = s5 - SERVO5_STEP*SERVO5_DIRECTION;
           }
           if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
           if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
@@ -382,3 +395,5 @@ void TriTrackRight(){
           sL = 40;
 }
  
+
+
