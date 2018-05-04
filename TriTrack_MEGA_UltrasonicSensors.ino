@@ -7,8 +7,8 @@
 #define L_Echo 5
 #define R_Trig 2
 #define R_Echo 3
-#define Edge_Trig 7
-#define Edge_Echo 6
+#define Edge_Trig 6 
+#define Edge_Echo 7
 #define turnleft 8
 #define turnright 9
 #define reverse 10
