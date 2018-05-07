@@ -1,4 +1,3 @@
-#include <Wire.h>
 
 #include <XBOXRECV.h>
 #include <Servo.h>
@@ -18,16 +17,16 @@
 
 //Define where each servo is attahed//
 
-#define SERVO1 3 //  Right Hat X        : Base Rotate
+#define SERVO1 2 //  Right Hat X        : Base Rotate
 
-#define SERVO2 4 //  RightHat Y         : Shoulder Joint
+#define SERVO2 3 //  RightHat Y         : Shoulder Joint
 
 #define SERVO3 5 //  LeftHat Y          : Wrist 
 #define SERVO4 7 //  LeftHat Y          : Grabber
-#define SERVO5 2 //  RIGHTHATX          : MAIN BASE
+//#define SERVO5 2 //  RIGHTHATX          : MAIN BASE
 
 #define SERVO6 6 //  RightHatX          : Spin Claw
-#define SERVO7 7
+#define SERVO7 4//                      : elbow
 
 #define RWHEEL 8 //                     : Right Wheel TriTrack  - CHANNEL 1  LABEL
 #define LWHEEL 9 //                     : Left Wheel TriTrack   - CHANNEL 2  LABEL
@@ -57,7 +56,8 @@
 #define SERVO3_RATE 4/32000 
 #define SERVO4_RATE 5/32000
 #define SERVO5_RATE 1/32000
-#define SERVO6_RATE 8/32000    
+#define SERVO6_RATE 8/32000  
+#define SERVO1_RATE 4/32000    
 
 #define SERVO1_DIRECTION 1 //Set to -1 to reverse servo direction.
 #define SERVO2_DIRECTION -1 //Set to -1 to reverse servo direction.
@@ -79,11 +79,11 @@
 #define LWHEEL_MIN 40
 #define RWHEEL_MIN 40
 
-#define SERVO1_MAX 178 //Define maximum servo angles.
+#define SERVO1_MAX 270 //Define maximum servo angles.
 #define SERVO2_MAX 178
 #define SERVO3_MAX 178 // EDIT*** : Claw - Change Value to avoid collision
 #define SERVO4_MAX 178 // EDIT*** : Claw - Change Value to avoid collision 
-#define SERVO5_MAX 270
+#define SERVO5_MAX 178
 #define SERVO6_MAX 178
 #define SERVO7_MAX 178
 #define LWHEEL_MAX 140
@@ -180,7 +180,6 @@ void loop() { //Primary runtime loop
         //Start of timed 
  
 if(Xbox.getButtonClick(L2,i)) { 
-//GRIPPER
           servo7.attach(7);
           s7 = s7 + SERVO7_STEP*SERVO7_DIRECTION;
           }
@@ -192,6 +191,7 @@ if(Xbox.getButtonClick(L2,i)) {
           if(s7 < SERVO7_MIN) s7 = SERVO7_MIN;
           
 
+//UP/DOWN FOR THE BASE PINS 3 AND 4
 if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
          servo2.attach(3);
   
@@ -199,14 +199,22 @@ if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHa
           }
           if(s2 > SERVO2_MAX) s2 = SERVO2_MAX;
           if(s2 < SERVO2_MIN) s2 = SERVO2_MIN;
-
-if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
+          
+          if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
 
 servo3.attach(4);  
           s3 = s3 + (Xbox.getAnalogHat(RightHatY,i) -  STICK_CENTER)*SERVO3_RATE*SERVO3_DIRECTION;
           }
           if(s3 > SERVO3_MAX) s3 = SERVO3_MAX;
           if(s3 < SERVO3_MIN) s3 = SERVO3_MIN;
+
+        if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
+         servo1.attach(2);
+            s1 = s1 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO1_RATE*SERVO1_DIRECTION;
+          }
+          if(s1 > SERVO1_MAX) s1 = SERVO6_MAX;
+          if(s1 < SERVO1_MIN) s1 = SERVO6_MIN;
+
             
 
 if (Xbox.getAnalogHat(LeftHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatY,i) < STICK_CENTER - DEADZONE) { 
@@ -218,7 +226,7 @@ servo4.attach(5);
 
           //Main base removal
            if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-            servo5.attach(6);          
+            servo5.attach(7);          
             s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
           }
           if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
@@ -226,13 +234,7 @@ servo4.attach(5);
 
 
          //--- temporary disattach----//
-         // if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
-         //  servo6.attach(2);
-         //Servo6 Spin Claw Pin7
-         //   s6 = s6 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO6_RATE*SERVO6_DIRECTION;
-         // }
-         //  if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
-         // if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
+
           
           if(Xbox.getButtonClick(L1,i)) { 
           //GRIPPER
@@ -380,4 +382,3 @@ void TriTrackRight(){
           sR = 140;
           sL = 40;
 }
-
