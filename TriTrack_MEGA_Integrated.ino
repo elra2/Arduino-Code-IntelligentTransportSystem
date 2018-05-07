@@ -1,3 +1,5 @@
+#include <Wire.h>
+
 #include <XBOXRECV.h>
 #include <Servo.h>
 // Satisfy IDE, which only needs to see the include statment in the ino.
@@ -81,7 +83,7 @@
 #define SERVO2_MAX 178
 #define SERVO3_MAX 178 // EDIT*** : Claw - Change Value to avoid collision
 #define SERVO4_MAX 178 // EDIT*** : Claw - Change Value to avoid collision 
-#define SERVO5_MAX 50
+#define SERVO5_MAX 270
 #define SERVO6_MAX 178
 #define SERVO7_MAX 178
 #define LWHEEL_MAX 140
@@ -123,7 +125,6 @@ int readright = 0;
 int readforward = 0;
 int readstop = 0;
 int readreverse = 0;
-
 
 //================================ Setup ================================//
 void setup()            //setup loop
@@ -215,36 +216,23 @@ servo4.attach(5);
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
           if(s4 < SERVO4_MIN) s4 = SERVO4_MIN;
 
-          //temporary main base removal
-          // if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-           // servo5.attach(6);          
-          //  s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
-         // }
-        //  if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
-        //  if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
-
-          if(Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE) { 
-          GRIPPER
-          servo5.attach(2);
-          s5 = s5 + SERVO5_STEP*SERVO5_DIRECTION;
-          }
-          else if(Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-            s5 = s5 - SERVO5_STEP*SERVO5_DIRECTION;
+          //Main base removal
+           if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
+            servo5.attach(6);          
+            s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
           }
           if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
           if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
 
 
-          //--- temporary disattach----//
+         //--- temporary disattach----//
          // if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
-   
-          //  servo6.attach(2);
+         //  servo6.attach(2);
          //Servo6 Spin Claw Pin7
          //   s6 = s6 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO6_RATE*SERVO6_DIRECTION;
          // }
-        //  if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
+         //  if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
          // if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
-
           
           if(Xbox.getButtonClick(L1,i)) { 
           //GRIPPER
@@ -307,9 +295,7 @@ servo4.attach(5);
             TriTrackReverse();
            }
            }
-           
-                                                    
-          
+
           if(Xbox.getButtonClick(X,i))   {        //Unlock Wheels and employ manual mode
                                                   // Detaches all servos - waiting for button to re-engage
               lwheel.attach(8);
@@ -394,6 +380,4 @@ void TriTrackRight(){
           sR = 140;
           sL = 40;
 }
- 
-
 
