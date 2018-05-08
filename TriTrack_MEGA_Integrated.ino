@@ -31,10 +31,10 @@
 #define RWHEEL 8 //                     : Right Wheel TriTrack  - CHANNEL 1  LABEL
 #define LWHEEL 9 //                     : Left Wheel TriTrack   - CHANNEL 2  LABEL
 
-#define SERVO1_INIT 90 //Define initial servo position(initial Condition) & (initiates when "start" button pressed).
-#define SERVO2_INIT 120
-#define SERVO3_INIT 120
-#define SERVO4_INIT 120
+#define SERVO1_INIT 160 //Define initial servo position(initial Condition) & (initiates when "start" button pressed).
+#define SERVO2_INIT 5
+#define SERVO3_INIT 10
+#define SERVO4_INIT 40
 #define SERVO5_INIT 90
 #define SERVO6_INIT 90
 #define SERVO7_INIT 120
@@ -53,15 +53,15 @@
 
       //Note: Org SERVO2_STEP 10
       //Define rate for servos controller by sticks (larger is faster).
-#define SERVO3_RATE 4/32000 
-#define SERVO4_RATE 5/32000
+#define SERVO3_RATE 2/32000 
+#define SERVO4_RATE 2/32000
 #define SERVO5_RATE 1/32000
-#define SERVO6_RATE 8/32000  
-#define SERVO1_RATE 4/32000    
+#define SERVO6_RATE 4/32000  
+#define SERVO1_RATE 2/32000    
 
 #define SERVO1_DIRECTION 1 //Set to -1 to reverse servo direction.
 #define SERVO2_DIRECTION -1 //Set to -1 to reverse servo direction.
-#define SERVO3_DIRECTION -1 //Set to -1 to reverse servo direction. CLAW 1
+#define SERVO3_DIRECTION 1 //Set to -1 to reverse servo direction. CLAW 1
 #define SERVO4_DIRECTION 1 //Set to -1 to reverse servo direction.  CLAW 2
 #define SERVO5_DIRECTION 1 //Set to -1 to reverse servo direction.
 #define SERVO6_DIRECTION 1 //Set to -1 to reverse servo direction.
@@ -109,6 +109,7 @@ Servo lwheel;
 Servo rwheel;
 
 unsigned long previousTime = 0; //for loop timing
+int i;
 
 int s1 = SERVO1_INIT; //Define variables to store servo positions and set to initial positions
 int s2 = SERVO2_INIT;
@@ -178,20 +179,31 @@ void loop() { //Primary runtime loop
     if(millis() - previousTime > LOOPTIME) { 
 
         //Start of timed 
- 
-if(Xbox.getButtonClick(L2,i)) { 
-          servo7.attach(7);
-          s7 = s7 + SERVO7_STEP*SERVO7_DIRECTION;
-          }
-          else if(Xbox.getButtonClick(R2,i)) {
-            s7 = s7 - SERVO7_STEP*SERVO7_DIRECTION;
 
-          }
-          if(s7 > SERVO7_MAX) s7 = SERVO7_MAX;
-          if(s7 < SERVO7_MIN) s7 = SERVO7_MIN;
-          
+          // ----- GRIPPER ----// - Pin 6, Servo 6
+      if(Xbox.getButtonClick(L1,i)) { 
+      servo6.attach(6);
+      s6 = s6 + SERVO6_STEP*SERVO6_DIRECTION;
+      }
+      else if(Xbox.getButtonClick(R1,i)) {
+      s6 = s6 - SERVO6_STEP*SERVO6_DIRECTION;
+      }
+      if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
+      if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
 
-//UP/DOWN FOR THE BASE PINS 3 AND 4
+          // ----- GRABBER ----// - Pin 7, Servo 7
+      if(Xbox.getButtonClick(L2,i)) { 
+      servo7.attach(7);
+      s7 = s7 + SERVO7_STEP*SERVO7_DIRECTION;
+      }
+      else if(Xbox.getButtonClick(R2,i)) {
+        s7 = s7 - SERVO7_STEP*SERVO7_DIRECTION;
+
+      }
+      if(s7 > SERVO7_MAX) s7 = SERVO7_MAX;
+      if(s7 < SERVO7_MIN) s7 = SERVO7_MIN;
+
+         // --- Up and Down for Base --- // Pin Servo 2, Pin 3 and Servo 3, Pin 4
 if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
          servo2.attach(3);
   
@@ -201,12 +213,13 @@ if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHa
           if(s2 < SERVO2_MIN) s2 = SERVO2_MIN;
           
           if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
-
 servo3.attach(4);  
           s3 = s3 + (Xbox.getAnalogHat(RightHatY,i) -  STICK_CENTER)*SERVO3_RATE*SERVO3_DIRECTION;
           }
           if(s3 > SERVO3_MAX) s3 = SERVO3_MAX;
           if(s3 < SERVO3_MIN) s3 = SERVO3_MIN;
+
+ // ----- Base Left to Right ------  // Servo 1, Pin 2
 
         if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
          servo1.attach(2);
@@ -216,38 +229,23 @@ servo3.attach(4);
           if(s1 < SERVO1_MIN) s1 = SERVO6_MIN;
 
             
-
+//---- Elbow ---- // Servo 4, Pin 5
 if (Xbox.getAnalogHat(LeftHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatY,i) < STICK_CENTER - DEADZONE) { 
-servo4.attach(5);  
+servo4.attach(5); 
             s4 = s4 + (Xbox.getAnalogHat(LeftHatY,i) -  STICK_CENTER)*SERVO4_RATE*SERVO4_DIRECTION;
           }
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
           if(s4 < SERVO4_MIN) s4 = SERVO4_MIN;
 
-          //Main base removal
-           if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-            servo5.attach(7);          
-            s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
-          }
-          if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
-          if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
+// ---- Gripper Rotate  ----// Servo x, Pin x
+         //  if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
+         //   servo5.attach(7);          
+         //   s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
+         // }
+         // if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
+         // if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
+    
 
-
-         //--- temporary disattach----//
-
-          
-          if(Xbox.getButtonClick(L1,i)) { 
-          //GRIPPER
-          servo6.attach(6);
-          s6 = s6 + SERVO6_STEP*SERVO6_DIRECTION;
-          }
-          else if(Xbox.getButtonClick(R1,i)) {
-            s6 = s6 - SERVO6_STEP*SERVO6_DIRECTION;
-          }
-          if(s6 > SERVO6_MAX) s6 = SERVO6_MAX;
-          if(s6 < SERVO6_MIN) s6 = SERVO6_MIN;
-          
-          
          //WHEELS----------------------------------------
          
         if(Xbox.getButtonClick(UP,i)) { 
@@ -323,8 +321,8 @@ servo4.attach(5);
                                                     //Also : Initializing Button : creative way to start robot
           if(Xbox.getButtonClick(Y,i))  {
             //STOP ROBOT WHEELS
-            sL = 140;
-            sR = 140;
+            sL = 90;
+            sR = 90;
                     
                 
           
@@ -363,8 +361,8 @@ previousTime = millis(); //save time at end of loop
   }
 
 void TriTrackForward(){
-          sL = 40;
-          sR = 40;
+         sR = 40;
+         sL = 40;
 }
 
 
