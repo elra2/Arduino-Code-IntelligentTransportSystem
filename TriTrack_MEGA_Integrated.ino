@@ -21,12 +21,11 @@
 
 #define SERVO2 3 //  RightHat Y         : Shoulder Joint
 
-#define SERVO3 5 //  LeftHat Y          : Wrist 
-#define SERVO4 7 //  LeftHat Y          : Grabber
-//#define SERVO5 2 //  RIGHTHATX          : MAIN BASE
+#define SERVO3 4 //  LeftHat Y          : Wrist 
+#define SERVO4 5 //  LeftHat Y          : Grabber
 
 #define SERVO6 6 //  RightHatX          : Spin Claw
-#define SERVO7 4//                      : elbow
+#define SERVO7 7//                      : Elbow
 
 #define RWHEEL 8 //                     : Right Wheel TriTrack  - CHANNEL 1  LABEL
 #define LWHEEL 9 //                     : Left Wheel TriTrack   - CHANNEL 2  LABEL
@@ -40,7 +39,6 @@
 #define SERVO7_INIT 120
 #define LWHEEL_INIT 90
 #define RWHEEL_INIT 90
-
 
 #define LWHEEL_STEP 5
 #define RWHEEL_STEP 5
@@ -182,7 +180,7 @@ void loop() { //Primary runtime loop
 
           // ----- GRIPPER ----// - Pin 6, Servo 6
       if(Xbox.getButtonClick(L1,i)) { 
-      servo6.attach(6);
+      servo6.attach(SERVO6);
       s6 = s6 + SERVO6_STEP*SERVO6_DIRECTION;
       }
       else if(Xbox.getButtonClick(R1,i)) {
@@ -193,7 +191,7 @@ void loop() { //Primary runtime loop
 
           // ----- GRABBER ----// - Pin 7, Servo 7
       if(Xbox.getButtonClick(L2,i)) { 
-      servo7.attach(7);
+      servo7.attach(SERVO7);
       s7 = s7 + SERVO7_STEP*SERVO7_DIRECTION;
       }
       else if(Xbox.getButtonClick(R2,i)) {
@@ -205,7 +203,7 @@ void loop() { //Primary runtime loop
 
          // --- Up and Down for Base --- // Pin Servo 2, Pin 3 and Servo 3, Pin 4
 if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
-         servo2.attach(3);
+         servo2.attach(SERVO2);
   
           s2 = s2 + (Xbox.getAnalogHat(RightHatY,i) - STICK_CENTER)*SERVO2_RATE*SERVO2_DIRECTION;
           }
@@ -213,7 +211,7 @@ if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHa
           if(s2 < SERVO2_MIN) s2 = SERVO2_MIN;
           
           if (Xbox.getAnalogHat(RightHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatY,i) < STICK_CENTER - DEADZONE) {
-servo3.attach(4);  
+servo3.attach(SERVO3);  
           s3 = s3 + (Xbox.getAnalogHat(RightHatY,i) -  STICK_CENTER)*SERVO3_RATE*SERVO3_DIRECTION;
           }
           if(s3 > SERVO3_MAX) s3 = SERVO3_MAX;
@@ -222,7 +220,7 @@ servo3.attach(4);
  // ----- Base Left to Right ------  // Servo 1, Pin 2
 
         if (Xbox.getAnalogHat(RightHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(RightHatX,i) < STICK_CENTER - DEADZONE) {
-         servo1.attach(2);
+         servo1.attach(SERVO1);
             s1 = s1 + (Xbox.getAnalogHat(RightHatX,i) - STICK_CENTER)*SERVO1_RATE*SERVO1_DIRECTION;
           }
           if(s1 > SERVO1_MAX) s1 = SERVO6_MAX;
@@ -231,7 +229,7 @@ servo3.attach(4);
             
 //---- Elbow ---- // Servo 4, Pin 5
 if (Xbox.getAnalogHat(LeftHatY,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatY,i) < STICK_CENTER - DEADZONE) { 
-servo4.attach(5); 
+servo4.attach(SERVO4); 
             s4 = s4 + (Xbox.getAnalogHat(LeftHatY,i) -  STICK_CENTER)*SERVO4_RATE*SERVO4_DIRECTION;
           }
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
@@ -294,13 +292,12 @@ servo4.attach(5);
            else if (readreverse == HIGH){
             TriTrackReverse();
            }
-           }
+         }
 
           if(Xbox.getButtonClick(X,i))   {        //Unlock Wheels and employ manual mode
                                                   // Detaches all servos - waiting for button to re-engage
               lwheel.attach(8);
               rwheel.attach(9);
-              
               }
               
           if(Xbox.getButtonClick(B,i))   {        // Safety Release
