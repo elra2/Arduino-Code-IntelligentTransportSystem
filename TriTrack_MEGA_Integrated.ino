@@ -287,7 +287,7 @@ servo4.attach(SERVO4);
             TriTrackForward();
            }
            else if (readright == HIGH){
-            TriTrackRight();
+           TriTrackRight();
            }
            else if (readreverse == HIGH){
             TriTrackReverse();
@@ -298,6 +298,7 @@ servo4.attach(SERVO4);
                                                   // Detaches all servos - waiting for button to re-engage
               lwheel.attach(8);
               rwheel.attach(9);
+              StopTriTrack();
               }
               
           if(Xbox.getButtonClick(B,i))   {        // Safety Release
@@ -311,16 +312,13 @@ servo4.attach(SERVO4);
               servo7.detach();
               lwheel.detach();
               rwheel.detach();      
-              
               }
                                           
                                                     //Safety Restore
                                                     //Also : Initializing Button : creative way to start robot
           if(Xbox.getButtonClick(Y,i))  {
-            //STOP ROBOT WHEELS
-            sL = 90;
-            sR = 90;
-                    
+           StopTriTrack();
+          }
                 
           
            if(Xbox.getButtonClick(START,i)) {       //Reset ALL Servos to initial positions when "start" button is pressed
@@ -330,7 +328,7 @@ servo4.attach(SERVO4);
             s4 = SERVO4_INIT;
             s5 = SERVO5_INIT;
             s6 = SERVO6_INIT;  
-            s7 = SERVO7_INIT;                                 }
+            s7 = SERVO7_INIT;                                 
             sL = LWHEEL_INIT;
             sR = RWHEEL_INIT;
                                        //Following are re-programmable detach buttons for other applications
@@ -348,9 +346,7 @@ previousTime = millis(); //save time at end of loop
         servo5.write(s5);
         servo6.write(s6);
         servo7.write(s7);
-        lwheel.write(sL);
-        rwheel.write(sR);
-                            }
+                          }
 }
           
     }
@@ -358,22 +354,29 @@ previousTime = millis(); //save time at end of loop
   }
 
 void TriTrackForward(){
-         sR = 40;
-         sL = 40;
+        lwheel.write(40);
+        rwheel.write(40);
 }
 
 
 void TriTrackReverse(){
-          sR = 140;
-          sL = 140;
+        lwheel.write(140);
+        rwheel.write(140);
 }
 
 void TriTrackLeft(){
-          sR = 40;
-          sL = 140;
+        rwheel.write(40);
+        lwheel.write(140);
 }
 
 void TriTrackRight(){  
-          sR = 140;
-          sL = 40;
+        rwheel.write(140);
+        lwheel.write(40);
 }
+
+void StopTriTrack(){
+        rwheel.write(90);
+        lwheel.write(90);
+}
+
+
