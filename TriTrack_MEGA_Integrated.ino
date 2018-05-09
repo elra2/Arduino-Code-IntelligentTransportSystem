@@ -1,4 +1,3 @@
-
 #include <XBOXRECV.h>
 #include <Servo.h>
 // Satisfy IDE, which only needs to see the include statment in the ino.
@@ -235,13 +234,12 @@ servo4.attach(SERVO4);
           if(s4 > SERVO4_MAX) s4 = SERVO4_MAX;
           if(s4 < SERVO4_MIN) s4 = SERVO4_MIN;
 
-// ---- Gripper Rotate  ----// Servo x, Pin x
-         //  if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
-         //   servo5.attach(7);          
-         //   s5 = s5 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO5_RATE*SERVO5_DIRECTION;
-         // }
-         // if(s5 > SERVO5_MAX) s5 = SERVO5_MAX;
-         // if(s5 < SERVO5_MIN) s5 = SERVO5_MIN;
+           if (Xbox.getAnalogHat(LeftHatX,i) > STICK_CENTER + DEADZONE || Xbox.getAnalogHat(LeftHatX,i) < STICK_CENTER - DEADZONE) {
+            servo3.attach(4);          
+            s3 = s3 + (Xbox.getAnalogHat(LeftHatX,i) - STICK_CENTER)*SERVO3_RATE*SERVO3_DIRECTION;
+          }
+          if(s3 > SERVO3_MAX) s3 = SERVO3_MAX;
+          if(s3 < SERVO3_MIN) s3 = SERVO3_MIN;
     
 
          //WHEELS----------------------------------------
@@ -378,5 +376,4 @@ void StopTriTrack(){
         rwheel.write(90);
         lwheel.write(90);
 }
-
 
