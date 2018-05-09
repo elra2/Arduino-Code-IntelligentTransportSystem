@@ -7,12 +7,6 @@
 
 #define LOOPTIME 50 //Define the delay between timed loop cycles. //was 25
 
-//define ultrasonic sensor signal
-#define leftsignal 21
-#define rightsignal 22
-#define forwardsignal 23
-#define reversesignal 24
-#define stopsignal 25
 
 //Define where each servo is attahed//
 
@@ -30,8 +24,8 @@
 #define LWHEEL 9 //                     : Left Wheel TriTrack   - CHANNEL 2  LABEL
 
 #define SERVO1_INIT 160 //Define initial servo position(initial Condition) & (initiates when "start" button pressed).
-#define SERVO2_INIT 5
-#define SERVO3_INIT 10
+#define SERVO2_INIT 35
+#define SERVO3_INIT 40
 #define SERVO4_INIT 40
 #define SERVO5_INIT 90
 #define SERVO6_INIT 90
@@ -106,7 +100,6 @@ Servo lwheel;
 Servo rwheel;
 
 unsigned long previousTime = 0; //for loop timing
-int i;
 
 int s1 = SERVO1_INIT; //Define variables to store servo positions and set to initial positions
 int s2 = SERVO2_INIT;
@@ -118,21 +111,9 @@ int s7 = SERVO7_INIT;
 int sL = LWHEEL_INIT;
 int sR = RWHEEL_INIT;
 
-int readleft = 0;
-int readright = 0;
-int readforward = 0;
-int readstop = 0;
-int readreverse = 0;
-
 //================================ Setup ================================//
 void setup()            //setup loop
 { 
-  //Ultrasonic Pin reading
-  pinMode(leftsignal, INPUT);
-  pinMode (rightsignal, INPUT);
-  pinMode (reversesignal, INPUT);
-  pinMode (forwardsignal, INPUT);
-  pinMode (stopsignal, INPUT); 
   
   Serial.begin(115200);
   while (!Serial); // Wait for serial port to connect - used on Leonardo, Teensy and other boards with built-in USB CDC serial connection
@@ -158,12 +139,6 @@ void setup()            //setup loop
 //================================ Loop ================================//
 
 void loop() { //Primary runtime loop
-
- readleft =  digitalRead(leftsignal);
- readright =  digitalRead(rightsignal);
- readreverse =  digitalRead(reversesignal);
- readforward =  digitalRead(forwardsignal);
- readstop =  digitalRead(stopsignal);
  
   Usb.Task(); //Task USB
 
@@ -245,16 +220,20 @@ servo4.attach(SERVO4);
          //WHEELS----------------------------------------
          
         if(Xbox.getButtonClick(UP,i)) { 
-          TriTrackForward(); 
+        lwheel.write(40);
+        rwheel.write(40);
           }
           if(Xbox.getButtonClick(DOWN,i)) {
-          TriTrackReverse();
+        lwheel.write(140);
+        rwheel.write(140);
           }
           if(Xbox.getButtonClick(LEFT,i)) {
-          TriTrackLeft();
+        rwheel.write(40);
+        lwheel.write(140);
           }
           if(Xbox.getButtonClick(RIGHT,i)) {
-          TriTrackRight();
+        rwheel.write(140);
+        lwheel.write(40);
           }
 
           Serial.print("  s1 = ");  //Debug information about servo positions. Uncomment when you are determining servo limits.
@@ -274,29 +253,13 @@ servo4.attach(SERVO4);
           
           
           if(Xbox.getButtonClick(A,i))   {        //Automation Mode - Ultrasonic Sensors
-           if (readleft == HIGH){
-            TriTrackLeft();
-           }
-           else if (readstop == HIGH){
-            sL = 140;
-            sR = 140;
-           }
-           else if (readforward == HIGH){
-            TriTrackForward();
-           }
-           else if (readright == HIGH){
-           TriTrackRight();
-           }
-           else if (readreverse == HIGH){
-            TriTrackReverse();
-           }
+
          }
 
           if(Xbox.getButtonClick(X,i))   {        //Unlock Wheels and employ manual mode
-                                                  // Detaches all servos - waiting for button to re-engage
+                                               // Detaches all servos - waiting for button to re-engage
               lwheel.attach(8);
               rwheel.attach(9);
-              StopTriTrack();
               }
               
           if(Xbox.getButtonClick(B,i))   {        // Safety Release
@@ -315,7 +278,8 @@ servo4.attach(SERVO4);
                                                     //Safety Restore
                                                     //Also : Initializing Button : creative way to start robot
           if(Xbox.getButtonClick(Y,i))  {
-           StopTriTrack();
+        rwheel.write(90);
+        lwheel.write(90);
           }
                 
           
@@ -350,30 +314,4 @@ previousTime = millis(); //save time at end of loop
     }
 
   }
-
-void TriTrackForward(){
-        lwheel.write(40);
-        rwheel.write(40);
-}
-
-
-void TriTrackReverse(){
-        lwheel.write(140);
-        rwheel.write(140);
-}
-
-void TriTrackLeft(){
-        rwheel.write(40);
-        lwheel.write(140);
-}
-
-void TriTrackRight(){  
-        rwheel.write(140);
-        lwheel.write(40);
-}
-
-void StopTriTrack(){
-        rwheel.write(90);
-        lwheel.write(90);
-}
 
